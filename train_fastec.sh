@@ -9,7 +9,7 @@ PROJECT_ROOT=$(pwd)
 # Default paths assuming dataset is at ../trainfastec relative to project
 # You can override these variables or edit them here
 fastec_dataset_type=Fastec
-fastec_root_path_training_data="${PROJECT_ROOT}/../trainfastec"
+fastec_root_path_training_data="${PROJECT_ROOT}/../fastec_rs_train"
 
 # Log directories relative to project
 log_dir_pretrained_GS="${PROJECT_ROOT}/Pretrain_models_SelfSoftsplat"
@@ -17,6 +17,8 @@ log_dir="${PROJECT_ROOT}/logs"
 #
 cd deep_unroll_net
 
+# Add project root to PYTHONPATH so package_core can be found
+export PYTHONPATH=$PYTHONPATH:$(pwd)/..
 
 python train_SelfRSSR.py \
           --dataset_type=$fastec_dataset_type \
