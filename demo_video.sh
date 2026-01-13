@@ -9,6 +9,7 @@ mkdir -p experiments/results_demo_gevrs_video_1
 cd deep_unroll_net
 
 ###
+:<<!
 python inference_demo_video.py \
             --model_label='pre' \
             --results_dir=../experiments/results_demo_carla_video \
@@ -16,8 +17,8 @@ python inference_demo_video.py \
             --img_H=448 \
             --gamma=1.0 \
             --log_dir=../deep_unroll_weights/pre_carla_ft
+!
 
-:<<!
 python inference_demo_video.py \
             --model_label='pre' \
             --results_dir=../experiments/results_demo_faster_video \
@@ -25,7 +26,7 @@ python inference_demo_video.py \
             --img_H=480 \
             --gamma=1.0 \
             --log_dir=../deep_unroll_weights/pre_fastec_ft
-!
+
 
 :<<!
 python inference_demo_video.py \

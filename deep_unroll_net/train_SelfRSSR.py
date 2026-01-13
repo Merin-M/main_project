@@ -41,8 +41,9 @@ parser.add_argument('--model_label_pretrained_GS', type=str, default='pre', help
 
 parser.add_argument('--dataset_type', type=str, required=True)
 parser.add_argument('--dataset_root_dir', type=str, required=True, help='absolute path for training dataset')
+parser.add_argument('--dataset_val_root_dir', type=str, default=None, help='absolute path for validation dataset (optional, defaults to dataset_root_dir with /train replaced by /val)')
 parser.add_argument('--log_dir', type=str, required=True, help='directory used to store trained networks')
-parser.add_argument('--log_dir_pretrained_GS', type=str, required=True, help='directory used to store trained GS-based VFI networks')
+parser.add_argument('--log_dir_pretrained_GS', type=str, default='./logs/Pretrained/pretrain_vfi/', help='directory used to store trained GS-based VFI networks (optional, will use random init if not found)')
 
 parser.add_argument('--load_1st_GS', type=bool, default=True)#Load two first scanline GS images
 parser.add_argument('--load_gt_flow', type=bool, default=False)#Load RS -> middle-row GS
@@ -76,13 +77,19 @@ dataloader = Create_dataloader(opts)
 
 # update opts
 orig_batch_sz = opts.batch_sz
-opts.dataset_root_dir = opts.dataset_root_dir.replace('/train', '/val')
+orig_dataset_root_dir = opts.dataset_root_dir
+
+# Use explicit validation path if provided, otherwise use string replacement
+if opts.dataset_val_root_dir is not None:
+    opts.dataset_root_dir = opts.dataset_val_root_dir
+else:
+    opts.dataset_root_dir = opts.dataset_root_dir.replace('/train', '/val')
 opts.batch_sz = 1
 
 dataloader_val = Create_dataloader(opts)
 
 # recover 
-opts.dataset_root_dir = opts.dataset_root_dir.replace('/val', '/train')
+opts.dataset_root_dir = orig_dataset_root_dir
 opts.batch_sz = orig_batch_sz
 
 ##===================================================##
@@ -191,6 +198,5 @@ class Train(Generic_train_test):
         self.logger.add_scalar('SSIM_val', ssim_avg, epoch)
         '''
 
-Train(model, opts, dataloader, logger, dataloader_val).train()
-
-
+if __name__ == '__main__':
+    Train(model, opts, dataloader, logger, dataloader_val).train()

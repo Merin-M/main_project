@@ -35,7 +35,7 @@ def Create_dataloader(opts):
     dataloader = torch.utils.data.DataLoader(dataset, 
                                             batch_size=opts.batch_sz, 
                                             shuffle=opts.shuffle_data, 
-                                            num_workers=opts.batch_sz, 
+                                            num_workers=0,  # Set to 0 for Windows compatibility
                                             drop_last=True)
     return dataloader
 

@@ -55,8 +55,20 @@ class Model(ModelBase):
         elif not opts.is_training or opts.continue_train:
             self.load_checkpoint(opts.model_label)
         else:
-            self.load_pretrained_OF_model(self.opts.model_label_pretrained_GS, self.opts.log_dir_pretrained_GS)#load pretrained optical flow model directly
-            self.load_pretrained_GS_model(self.opts.model_label_pretrained_GS, self.opts.log_dir_pretrained_GS)#load pretrained GS-based VFI model
+            # Try to load pretrained models, but continue with random initialization if not found
+            try:
+                self.load_pretrained_OF_model(self.opts.model_label_pretrained_GS, self.opts.log_dir_pretrained_GS)#load pretrained optical flow model directly
+                print("Successfully loaded pretrained optical flow model")
+            except Exception as e:
+                print(f"WARNING: Could not load pretrained optical flow model: {e}")
+                print("Continuing with random initialization for optical flow network...")
+            
+            try:
+                self.load_pretrained_GS_model(self.opts.model_label_pretrained_GS, self.opts.log_dir_pretrained_GS)#load pretrained GS-based VFI model
+                print("Successfully loaded pretrained VFI model")
+            except Exception as e:
+                print(f"WARNING: Could not load pretrained VFI model: {e}")
+                print("Continuing with random initialization for VFI network...")
         
         
         if self.opts.is_training:
@@ -77,7 +89,13 @@ class Model(ModelBase):
             
             ###Initializing VGG16 model for perceptual loss
             self.MSE_LossFn = nn.MSELoss()
-            vgg16 = torchvision.models.vgg16(pretrained=True)
+            try:
+                # Try modern PyTorch API (v0.13+)
+                from torchvision.models import VGG16_Weights
+                vgg16 = torchvision.models.vgg16(weights=VGG16_Weights.IMAGENET1K_V1)
+            except ImportError:
+                # Fallback to older API for PyTorch < 0.13
+                vgg16 = torchvision.models.vgg16(pretrained=True)
             self.vgg16_conv_4_3 = nn.Sequential(*list(vgg16.children())[0][:22])
             self.vgg16_conv_4_3.to('cuda')
             for param in self.vgg16_conv_4_3.parameters():

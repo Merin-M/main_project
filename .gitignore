@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+venv_selfrssplat/
+.env
+.venv
+
+# IDE / Editor
+.vscode/
+.idea/
+
+# Project Specific Log/Output directories
+logs/
+logs_batch2/
+experiments/
+Pretrain_models_SelfSoftsplat/
+demo_results_pretrained/
+best_visualizations/
+training_log.txt
+demo_video/
+picture/
+
+# System
+Thumbs.db
+Desktop.ini
