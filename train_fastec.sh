@@ -25,27 +25,22 @@ export PYTHONPATH=$PYTHONPATH:$(pwd)/..
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/cuda-12.2/lib64:/usr/local/cuda-12/lib64:/usr/local/cuda-11/lib64
 
 # 2. Try to find pip-installed nvidia-cuda-runtime-cu11
-echo "Attempting to locate pip-installed CUDA runtime..."
-PIP_CUDA_PATH=$(python -c "import os, sys; 
-try: 
-    import nvidia.cuda_runtime; 
-    print(os.path.join(os.path.dirname(nvidia.cuda_runtime.__file__), 'lib')) 
-except: 
+# 2. Try to find any pip-installed nvidia libraries (cuda_runtime, cublas, etc.)
+echo "Attempting to locate pip-installed CUDA libraries..."
+PIP_CUDA_PATHS=$(python -c "import os, glob, site; 
+try:
+    site_packages = site.getsitepackages()[0]
+    # Look for nvidia/*/lib directories
+    libs = glob.glob(os.path.join(site_packages, 'nvidia', '*', 'lib'))
+    print(':'.join(libs))
+except:
     pass" 2>/dev/null)
 
-# Fallback: Find it manually in site-packages if python import fails
-if [ -z "$PIP_CUDA_PATH" ]; then
-    SITE_PACKAGES=$(python -c "import site; print(site.getsitepackages()[0])" 2>/dev/null)
-    if [ ! -z "$SITE_PACKAGES" ]; then
-        PIP_CUDA_PATH=$(find $SITE_PACKAGES -name "libcudart.so.11.0" -printf "%h\n" | head -n 1)
-    fi
-fi
-
-if [ ! -z "$PIP_CUDA_PATH" ]; then
-    echo "Found pip-installed CUDA runtime at: $PIP_CUDA_PATH"
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PIP_CUDA_PATH
+if [ ! -z "$PIP_CUDA_PATHS" ]; then
+    echo "Found pip-installed CUDA libraries at: $PIP_CUDA_PATHS"
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PIP_CUDA_PATHS
 else
-    echo "WARNING: Could not locate pip-installed CUDA runtime. 'cupy' might fail."
+    echo "WARNING: Could not locate pip-installed CUDA libraries."
 fi
 
 echo "LD_LIBRARY_PATH is now: $LD_LIBRARY_PATH"
