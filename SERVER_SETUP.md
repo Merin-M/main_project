@@ -106,5 +106,12 @@ This means `cupy` is installed but cannot find the CUDA runtime libraries.
     ```bash
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-12.2/lib64
     ```
-3.  Or verify you have the right `cupy` version (`cupy-cuda11x` vs `cupy-cuda12x`).
+### ImportError: libGL.so.1: cannot open shared object file
+This happens if `opencv-python` is installed on a server without GUI libraries.
+**Fix:** Switch to the headless version:
+```bash
+pip uninstall opencv-python
+pip install opencv-python-headless
+```
+(This is already handled in the updated `requirements.txt`).
 
