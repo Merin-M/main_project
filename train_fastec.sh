@@ -20,6 +20,9 @@ cd deep_unroll_net
 # Add project root to PYTHONPATH so package_core can be found
 export PYTHONPATH=$PYTHONPATH:$(pwd)/..
 
+# Attempt to add CUDA libraries to LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/cuda-12.2/lib64:/usr/local/cuda-12/lib64
+
 python train_SelfRSSR.py \
           --dataset_type=$fastec_dataset_type \
           --dataset_root_dir=$fastec_root_path_training_data \

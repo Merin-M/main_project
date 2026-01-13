@@ -96,3 +96,15 @@ Similar to training, use `inference.sh` or `demo_video.sh`. Ensure paths to your
 chmod +x inference.sh
 ./inference.sh
 ```
+
+## 7. Troubleshooting
+
+### ImportError: libcudart.so.12: cannot open shared object file
+This means `cupy` is installed but cannot find the CUDA runtime libraries.
+1.  Verify where your CUDA is installed (usually `/usr/local/cuda-12.2/lib64`).
+2.  Add it to your library path:
+    ```bash
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-12.2/lib64
+    ```
+3.  Or verify you have the right `cupy` version (`cupy-cuda11x` vs `cupy-cuda12x`).
+
