@@ -45,7 +45,12 @@ fi
 
 echo "LD_LIBRARY_PATH is now: $LD_LIBRARY_PATH"
 
+# Debug: Check GPU status
+echo "Checking GPU status..."
+nvidia-smi || echo "nvidia-smi not found"
+
 python train_SelfRSSR.py \
+          --batch_sz=1 \
           --dataset_type=$fastec_dataset_type \
           --dataset_root_dir=$fastec_root_path_training_data \
           --log_dir_pretrained_GS=$log_dir_pretrained_GS \
