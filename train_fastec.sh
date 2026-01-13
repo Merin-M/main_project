@@ -3,11 +3,17 @@
 
 # !! Updata the path to the dataset and directory to 
 # !! save your trained models with your own local path !!
-fastec_dataset_type=Fastec
-fastec_root_path_training_data=/data/local_userdata/fanbin/raw_data/faster/data_train/train/
+# Get absolute path of the project root (where this script is located)
+PROJECT_ROOT=$(pwd)
 
-log_dir_pretrained_GS=/home/fanbin/fan/SelfRSSplat/deep_unroll_weights/Pretrained/pretrain_vfi/
-log_dir=/home/fanbin/fan/SelfRSSplat/deep_unroll_weights/
+# Default paths assuming dataset is at ../trainfastec relative to project
+# You can override these variables or edit them here
+fastec_dataset_type=Fastec
+fastec_root_path_training_data="${PROJECT_ROOT}/../trainfastec"
+
+# Log directories relative to project
+log_dir_pretrained_GS="${PROJECT_ROOT}/Pretrain_models_SelfSoftsplat"
+log_dir="${PROJECT_ROOT}/logs"
 #
 cd deep_unroll_net
 
