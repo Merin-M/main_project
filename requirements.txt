@@ -1,15 +1,17 @@
+--find-links https://download.pytorch.org/whl/torch_stable.html
+
 numpy==1.22.0
 tensorboardX==2.4.1
 Pillow==8.4.0
 scikit-image==0.19.1
-torchvision==0.10.1
+torchvision==0.10.1+cu111
 path==13.1.0
 opencv-python-headless==4.5.5.62
 imageio==2.13.5
 scipy==1.7.3
 tqdm==4.62.3
 
-torch==1.9.1
+torch==1.9.1+cu111
 six
 protobuf<=3.20.1
 thop
