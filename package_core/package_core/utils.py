@@ -2,7 +2,7 @@ from __future__ import division
 import shutil
 import numpy as np
 import torch
-import meshzoo
+
 from path import Path
 import datetime
 from collections import OrderedDict
@@ -54,11 +54,24 @@ def tensor2array(tensor, max_value=None, colormap='rainbow'):
     return array
 
 def generate_2D_mesh(H, W):
-    _, faces = meshzoo.rectangle(
-        xmin = -1., xmax = 1.,
-        ymin = -1., ymax = 1.,
-        nx = W, ny = H,
-        zigzag=True)
+    # Re-implmentation of meshzoo.rectangle to remove dependency
+    # Create vertices indices
+    idx = np.arange(H * W).reshape(H, W)
+    
+    # Get indices for quads (top-left corners)
+    # We want indices that correspond to the top-left of every quad
+    # i.e., all rows except last, all cols except last
+    v0 = idx[:-1, :-1].reshape(-1)
+    v1 = idx[:-1, 1:].reshape(-1)
+    v2 = idx[1:, :-1].reshape(-1)
+    v3 = idx[1:, 1:].reshape(-1)
+    
+    # Create two triangles for each quad: (v0, v1, v2) and (v1, v3, v2)
+    faces_a = np.stack([v0, v1, v2], axis=1)
+    faces_b = np.stack([v1, v3, v2], axis=1)
+    
+    # Interleave them to match a zigzag/grid pattern if needed, or just concat
+    faces = np.vstack([faces_a, faces_b])
 
     x = torch.arange(0, W, 1).float().cuda() 
     y = torch.arange(0, H, 1).float().cuda()

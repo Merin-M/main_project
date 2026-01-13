@@ -8,6 +8,6 @@ opencv-python==4.5.5.62
 imageio==2.13.5
 scipy==1.7.3
 tqdm==4.62.3
-meshzoo
+
 torch==1.9.1
 cupy
