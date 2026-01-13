@@ -10,7 +10,7 @@ from torchvision import transforms
 
 import sys
 # Add parent directory to path to find package_core
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'package_core')))
 
 from package_core.generic_train_test import *
 from package_core.metrics import *
