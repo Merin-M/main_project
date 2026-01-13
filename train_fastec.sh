@@ -21,7 +21,21 @@ cd deep_unroll_net
 export PYTHONPATH=$PYTHONPATH:$(pwd)/..
 
 # Attempt to add CUDA libraries to LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/cuda-12.2/lib64:/usr/local/cuda-12/lib64
+# 1. Try standard locations
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/cuda-12.2/lib64:/usr/local/cuda-12/lib64:/usr/local/cuda-11/lib64
+
+# 2. Try to find pip-installed nvidia-cuda-runtime-cu11
+PIP_CUDA_PATH=$(python -c "import os; \
+try: \
+    import nvidia.cuda_runtime.lib; \
+    print(nvidia.cuda_runtime.lib.__path__[0]); \
+except: \
+    pass" 2>/dev/null)
+
+if [ ! -z "$PIP_CUDA_PATH" ]; then
+    echo "Found pip-installed CUDA runtime at: $PIP_CUDA_PATH"
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PIP_CUDA_PATH
+fi
 
 python train_SelfRSSR.py \
           --dataset_type=$fastec_dataset_type \
